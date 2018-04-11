@@ -2,6 +2,8 @@ package com.hogehoge.fmandroidtraining;
 
 
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -20,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public  int stack = 0;  //数量
+    public String comment = ""; //コメント
     static ArrayList data = new ArrayList<>();
 
     @Override
@@ -72,8 +75,27 @@ public class MainActivity extends AppCompatActivity {
 
 
         /* [コメント]フィールド */
-        EditText editText = findViewById(R.id.comment1);
-        //背景タッチ時にコメント欄のソフトウェアキーボードを隠す。
+        final EditText editText = findViewById(R.id.comment1);
+        //入力した文字数で時刻や追加ボタンがずれていくので大きさを固定する。
+        editText.setWidth(editText.getWidth());
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                comment = editable.toString();
+            }
+        });
+
+        //背景を押したときにソフトウェアキーボードを隠す
         editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -84,11 +106,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
+
          /* [ 追加 ]ボタンの処理 */
         findViewById(R.id.add).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addListView(stack,"a");
+                addListView(stack,comment);
             }
         });
 
@@ -146,19 +170,7 @@ public class MainActivity extends AppCompatActivity {
         return sdf.format(date);
     }
 
-
-    /*private void addTableRow(){
-        TableLayout table = findViewById(R.id.listView);
-
-        TableRow tableRow = new TableRow(this);
-        TableLayout.LayoutParams lp = new TableLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        table.addView(tableRow);
-        //layout.addView(createCheckBox(sdf.format(date) + " " + castNumberForString(stack)));
-        tableRow.addView(createCheckBox(castNumberForString(stack)));
-        tableRow.addView(createButton("削除"));
-    }*/
+    
 
     private void addListView(int stack,String comment){
         data.add(getNowTime() + " " + stack + " " + comment);
