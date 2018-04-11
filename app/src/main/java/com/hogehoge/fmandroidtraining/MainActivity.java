@@ -1,10 +1,11 @@
 package com.hogehoge.fmandroidtraining;
 
 
+
+
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
@@ -21,8 +22,8 @@ import android.view.View;
 public class MainActivity extends AppCompatActivity {
 
 
-    public  int stack = 0;  //数量
-    public String comment = ""; //コメント
+    static  int stack = 0;  //数量
+    static String comment = ""; //コメント
     static ArrayList data = new ArrayList<>();
 
     @Override
@@ -125,14 +126,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    @Override
-    protected void onResume(){
-        super.onResume();
-
-    }
-
-
-
     /*
     　文字列にキャストして通貨表示するopを付けて返す関数
     　引数:int
@@ -170,16 +163,17 @@ public class MainActivity extends AppCompatActivity {
         return sdf.format(date);
     }
 
-    
+
 
     private void addListView(int stack,String comment){
-        data.add(getNowTime() + " " + stack + " " + comment);
+        data.add(getNowTime() + " " + castNumberForString(stack) + " " + comment);
 
         // リスト項目とListViewを対応付けるArrayAdapterを用意する
-        ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, data);
+       // ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, data);
+
 
         ListView listView = findViewById(R.id.listView);
-        listView.setAdapter(adapter);
+        //listView.setAdapter(adapter);
     }
 
     public void hideKeyboard(View view) {
@@ -187,5 +181,6 @@ public class MainActivity extends AppCompatActivity {
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-
 }
+
+
