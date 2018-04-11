@@ -1,15 +1,16 @@
 package com.hogehoge.fmandroidtraining;
 
+
 import android.support.v7.app.AppCompatActivity;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.os.Bundle;
 import android.os.Handler;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 import android.widget.*;
 import android.view.View;
 
@@ -17,18 +18,18 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    //数量
-    public  int stack = 0;
+
+    public  int stack = 0;  //数量
     static ArrayList data = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_main);
 
         /*数量表示*/
-        //テスト用初期値
-        stack = 1000;
+        stack = 1000;        //テスト用初期値
         TextView textView = findViewById(R.id.text_view1);
         textView.setText("数量" + castNumberForString(stack));
 
@@ -70,16 +71,32 @@ public class MainActivity extends AppCompatActivity {
         handler.post(runnable);
 
 
+        /* [コメント]フィールド */
+        EditText editText = findViewById(R.id.comment1);
+        //背景タッチ時にコメント欄のソフトウェアキーボードを隠す。
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+
+
          /* [ 追加 ]ボタンの処理 */
         findViewById(R.id.add).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addListView();
+                addListView(stack,"a");
             }
         });
 
         /*[ クリア ]*/
         /*[ 選択された合計数量 ]*/
+
+
+
     }
 
 
@@ -122,13 +139,15 @@ public class MainActivity extends AppCompatActivity {
         return checkBox;
     }
 
+    /*現在時刻を取得してhh:mm:ss形式で返す*/
     private String getNowTime(){
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("kk':'mm':'ss");
         return sdf.format(date);
     }
 
-    private void addTableRow(){
+
+    /*private void addTableRow(){
         TableLayout table = findViewById(R.id.listView);
 
         TableRow tableRow = new TableRow(this);
@@ -139,10 +158,10 @@ public class MainActivity extends AppCompatActivity {
         //layout.addView(createCheckBox(sdf.format(date) + " " + castNumberForString(stack)));
         tableRow.addView(createCheckBox(castNumberForString(stack)));
         tableRow.addView(createButton("削除"));
-    }
+    }*/
 
-    private void addListView(){
-        data.add(getNowTime());
+    private void addListView(int stack,String comment){
+        data.add(getNowTime() + " " + stack + " " + comment);
 
         // リスト項目とListViewを対応付けるArrayAdapterを用意する
         ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, data);
@@ -150,5 +169,11 @@ public class MainActivity extends AppCompatActivity {
         ListView listView = findViewById(R.id.listView);
         listView.setAdapter(adapter);
     }
+
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
 
 }
