@@ -1,8 +1,6 @@
 package com.hogehoge.fmandroidtraining;
 
 
-
-
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,6 +12,7 @@ import android.os.Handler;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import android.widget.*;
 import android.view.View;
 
@@ -24,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     static  int stack = 0;  //数量
     static String comment = ""; //コメント
-    static ArrayList data = new ArrayList<>();
+    static List<String> data = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +116,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
+
+
         /*[ クリア ]*/
         /*[ 選択された合計数量 ]*/
 
@@ -135,26 +138,7 @@ public class MainActivity extends AppCompatActivity {
         String numStr = String.format("%,d",num);
         return numStr;
     }
-    /*
-    　ボタン作成関数 引数で与えられたテキストのボタンを作る。
-    　引数:String
-    　戻り値:button
-    */
-    private Button createButton(String text) {
-        Button button = new Button(this);
-        button.setText(text);
-        return button;
-    }
-    /*
-    　チェックボックス作成関数 引数で与えられたチェックボックスを作る。
-    　引数:String
-    　戻り値:checkbox
-     */
-    private CheckBox createCheckBox(String text){
-        CheckBox checkBox = new CheckBox(this);
-        checkBox.setText(text);
-        return checkBox;
-    }
+
 
     /*現在時刻を取得してhh:mm:ss形式で返す*/
     private String getNowTime(){
@@ -165,15 +149,27 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
     private void addListView(int stack,String comment){
         data.add(getNowTime() + " " + castNumberForString(stack) + " " + comment);
 
-        // リスト項目とListViewを対応付けるArrayAdapterを用意する
-       // ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, data);
-
-
         ListView listView = findViewById(R.id.listView);
-        //listView.setAdapter(adapter);
+        final CustomAdapter adapter = new CustomAdapter(this,0,data);
+
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch (view.getId()) {
+                    case R.id.deleteButton:
+                        Toast.makeText(MainActivity.this,  "削除ボタンが押されました", Toast.LENGTH_SHORT).show();
+                        data.remove(position);
+                        adapter.notifyDataSetChanged();
+                        break;
+                }
+            }
+        });
+
     }
 
     public void hideKeyboard(View view) {
